@@ -17,7 +17,8 @@ module.exports = {
 		"sound" : "panther.mp3"
 	},
 	"cin" : {
-
+		"logo" : "bengals.png",
+		"sound" : "tiger.mp3"
 	},
 	"chi" : {
 
@@ -29,13 +30,15 @@ module.exports = {
 
 	},
 	"den" : {
-
+		"logo" : "broncos.png",
+		"sound" : "neigh.mp3"
 	},
 	"det" : {
 
 	},
 	"gb" : {
-
+		"logo" : "packers.png",
+		"sound" : "sound_ddc.mp3"
 	},
 	"hou" : {
 
@@ -60,7 +63,7 @@ module.exports = {
 
 	},
 	"ne" : {
-
+		"logo": "pats.png"
 	},
 	"nyg" : {
 
@@ -75,7 +78,7 @@ module.exports = {
 
 	},
 	"pit" : {
-
+		"logo" : "steelers.png"
 	},
 	"sd" : {
 
@@ -88,6 +91,12 @@ module.exports = {
 	},
 	"stl" : {
 
+	},
+	"ten" : {
+		"logo" : "titans.png"
+	},
+	"was" : {
+		"logo" : "redskins.png"
 	}
 
 }
