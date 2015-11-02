@@ -19,7 +19,9 @@
   "author": "Zack Low",
   "license": "MIT",
   "dependencies": {
+    "ejs": "^2.3.4",
     "express": "~4.10.2",
+    "request-promise": "^1.0.2",
     "socket.io": "~1.3.7"
   }
 }
