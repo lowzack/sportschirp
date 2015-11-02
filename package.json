@@ -1,0 +1,25 @@
+{
+  "name": "WebChirps",
+  "version": "0.0.1",
+  "description": "A simple Node application using WebSockets to chirp whenever the Arizona Cardinals score",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node",
+    "chirp",
+    "web",
+    "socket",
+    "websocket",
+    "websockets",
+    "nfl",
+    "football"
+  ],
+  "author": "Zack Low",
+  "license": "MIT",
+  "dependencies": {
+    "express": "~4.10.2",
+    "socket.io": "~1.3.7"
+  }
+}

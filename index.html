@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Double Check It!</title>
+    <style>
+      body {height: 100%; width:100%; margin: 0; background: url(media/gbp.jpg) no-repeat center center fixed; background-size:cover;}
+    </style>
+  </head>
+  <body>
+	<div class="info"><p></p></div>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script type="text/javascript">
+      var socket = io();
+      var audio = new Audio('media/sound_ddc.mp3');
+      socket.on('score', function(msg) {
+        var change = parseInt(msg);
+        audio.play()
+      });
+    </script>
+  </body>
+</html>
