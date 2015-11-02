@@ -13,6 +13,7 @@ var _ = require('lodash');
 var config = require('./config.js');
 
 var currentScores;
+var openSockets;
 
 app.use("/media", express.static(__dirname + '/media'));
 app.use("/dist", express.static(__dirname + '/dist'));
@@ -23,13 +24,9 @@ app.use("/dist/fonts", express.static(__dirname + '/dist/fonts'));
 app.set('view engine', 'ejs')
 
 app.get('/:team', function(req, res) {
-	var gameIndex = _.findIndex(currentScores, function(score){
-		if(score.h == req.params.team || score.v == req.params.team){
-			return true;
-		}else {
-			return false;
-		}
-	});
+
+	var gameIndex = getIndex(req.params.team);
+
 	if(gameIndex == -1){
 		res.send("Game Not Found");
 	}else {
@@ -46,35 +43,38 @@ app.get('/:team', function(req, res) {
 			'awaySound':config[game.v.toLowerCase()].sound,
 			'awayLogo': config[game.v.toLowerCase()].logo
 		});
-
-		io.on('connection', function(socket) {
-			var lastGameState = currentScores[gameIndex];
-		    
-		    console.log('a user connected to '+req.params.team);
-		    
-		    setInterval(function(){
-		    	console.log('checking scores');
-		    	var emitFlag = null;
-		    	if(lastGameState.hs < currentScores[gameIndex].hs){
-		    		emitFlag = 'homeScore';
-		    	} else if(lastGameState.vs < currentScores[gameIndex].vs){
-		    		emitFlag = 'awayScore';
-		    	}
-		    	if(emitFlag != null){
-		    		io.emit(emitFlag,{
-		    			'home': currentScores[gameIndex].hs,
-		    			'away': currentScores[gameIndex].vs
-		    		});
-		    	}
-		    }, 15000);
-
-		    socket.on('disconnect', function() {
-		    	console.log('user connected to '+req.params.team+' disconnected');
-		    });
-		});
 	}
 });
 
+io.on('connection', function(socket) {
+	var referer = socket.handshake.headers.referer.split("/");
+	var team = referer[referer.length - 1];
+	var gameIndex = getIndex(team);
+
+	var lastGameState = currentScores[gameIndex];
+	    
+	console.log('a user connected to ' + team);
+	
+	setInterval(function(){
+		console.log('checking scores');
+		    var emitFlag = null;
+		    if(lastGameState.hs < currentScores[gameIndex].hs){
+		   		emitFlag = 'homeScore';
+		   	} else if(lastGameState.vs < currentScores[gameIndex].vs){
+		   		emitFlag = 'awayScore';
+		   	}
+	    	if(emitFlag != null){
+	    		io.emit(emitFlag,{
+	    			'home': currentScores[gameIndex].hs,
+	    			'away': currentScores[gameIndex].vs
+	    		});
+	    	}
+    }, 15000);
+	
+	socket.on('disconnect', function() {
+		console.log('user connected to '+team+' disconnected');
+	});
+});
 /**
 * Makes a request to the url and does some janky things to the data...
 */
@@ -89,6 +89,15 @@ function updateScore() {
 			console.log('Scores Updated');
 		}
 	);
+}
+function getIndex(teamName){
+	return _.findIndex(currentScores, function(score){
+		if(score.h == teamName || score.v == teamName){
+			return true;
+		}else {
+			return false;
+		}
+	});
 }
 
 server.listen(3000, function() {
