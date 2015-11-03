@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Double Check It!</title>
+    <title>Sports Chirp!</title>
     <style>
     	body{
     		padding: 0;
@@ -56,12 +56,18 @@
     <script type="text/javascript">
       var socket = io();
       socket.on('homeScore', function(msg) {
+	var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=homeSound%>');
-        audio.play()
+        audio.play();
+	$('#homeScore').html(data.home);
+	$('#awayScore').html(data.away);
       });
       socket.on('awayScore', function(msg) {
+	var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=awaySound%>');
-        audio.play()
+        audio.play();
+	$('#homeScore').html(data.home);
+	$('#awayScore').html(data.away);
       });
     </script>
   </body>
