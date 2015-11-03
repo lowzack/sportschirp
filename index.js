@@ -6,8 +6,9 @@
 **/
 var express = require('express');
 var app = require('express')();
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var server = app.listen(3000);
+//var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
 var request = require('request-promise');
 var _ = require('lodash');
 var config = require('./config.js');
@@ -96,6 +97,7 @@ function updateScore() {
 			    			'home': currentScores[gameIndex].hs,
 			    			'away': currentScores[gameIndex].vs
 			    		});
+					socket.lastState = currentScores[gameIndex];
 			    	}
 				});
 			});
