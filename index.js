@@ -87,7 +87,8 @@ function updateScore() {
 					var emitFlag = null;
 				    if(socket.lastState.hs < currentScores[gameIndex].hs){
 				   		emitFlag = 'homeScore';
-				   	} else if(socket.lastState.vs < currentScores[gameIndex].vs){
+				   	//} else if(socket.lastState.vs = currentScores[gameIndex].vs){
+				   	}else{
 				   		emitFlag = 'awayScore';
 				   	}
 			    	if(emitFlag != null){

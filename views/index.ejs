@@ -56,18 +56,18 @@
     <script type="text/javascript">
       var socket = io();
       socket.on('homeScore', function(msg) {
-	var data = JSON.parse(msg);
+		//var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=homeSound%>');
         audio.play();
-	$('#homeScore').html(data.home);
-	$('#awayScore').html(data.away);
+        $('#homeScore').html(msg.home);
+        $('#awayScore').html(msg.away);
       });
       socket.on('awayScore', function(msg) {
-	var data = JSON.parse(msg);
+		//var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=awaySound%>');
         audio.play();
-	$('#homeScore').html(data.home);
-	$('#awayScore').html(data.away);
+        $('#homeScore').html(msg.home);
+        $('#awayScore').html(msg.away);
       });
     </script>
   </body>
