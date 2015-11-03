@@ -54,7 +54,8 @@ module.exports = {
 
 	},
 	"mia" : {
-
+		"logo" : "dolphins.png",
+		"sound" : "dolphin.mp3"
 	},
 	"min" : {
 

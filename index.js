@@ -13,7 +13,7 @@ var _ = require('lodash');
 var config = require('./config.js');
 
 var currentScores;
-var openSockets;
+var activeRooms = [];
 
 app.use("/media", express.static(__dirname + '/media'));
 app.use("/dist", express.static(__dirname + '/dist'));
@@ -28,6 +28,7 @@ app.get('/:team', function(req, res) {
 	var gameIndex = getIndex(req.params.team);
 
 	if(gameIndex == -1){
+		// TODO: Make a nicer not found page, remember to exclude socket code in order to prevent connection problems
 		res.send("Game Not Found");
 	}else {
 		var game = currentScores[gameIndex];
@@ -52,24 +53,13 @@ io.on('connection', function(socket) {
 	var gameIndex = getIndex(team);
 
 	var lastGameState = currentScores[gameIndex];
-	    
-	console.log('a user connected to ' + team);
 	
-	setInterval(function(){
-		console.log('checking scores');
-		    var emitFlag = null;
-		    if(lastGameState.hs < currentScores[gameIndex].hs){
-		   		emitFlag = 'homeScore';
-		   	} else if(lastGameState.vs < currentScores[gameIndex].vs){
-		   		emitFlag = 'awayScore';
-		   	}
-	    	if(emitFlag != null){
-	    		io.emit(emitFlag,{
-	    			'home': currentScores[gameIndex].hs,
-	    			'away': currentScores[gameIndex].vs
-	    		});
-	    	}
-    }, 15000);
+	socket.join(team);
+	activeRooms.push(team);
+	activeRooms = _.uniq(activeRooms);
+	socket.lastState = lastGameState;
+
+	console.log('a user connected to ' + team);
 	
 	socket.on('disconnect', function() {
 		console.log('user connected to '+team+' disconnected');
@@ -79,7 +69,6 @@ io.on('connection', function(socket) {
 * Makes a request to the url and does some janky things to the data...
 */
 function updateScore() {
-	var score;
 	request({ 
 		method: 'get',
 		uri:'http://www.nfl.com/liveupdate/scorestrip/ss.json'
@@ -87,6 +76,29 @@ function updateScore() {
 		function(error,response,body) {
 			currentScores = JSON.parse(body).gms;
 			console.log('Scores Updated');
+			var rooms = io.sockets.adapter.rooms;
+			_.each(activeRooms, function (key, room) {
+				
+				var gameIndex = getIndex(key);
+
+				_.each(rooms[key], function(id,value) {
+					var socket = io.sockets.connected[value];
+					console.log('checking socket');
+					var emitFlag = null;
+				    if(socket.lastState.hs < currentScores[gameIndex].hs){
+				   		emitFlag = 'homeScore';
+				   	} else if(socket.lastState.vs < currentScores[gameIndex].vs){
+				   		emitFlag = 'awayScore';
+				   	}
+			    	if(emitFlag != null){
+			    		console.log('Scores emitted');
+			    		socket.emit(emitFlag,{
+			    			'home': currentScores[gameIndex].hs,
+			    			'away': currentScores[gameIndex].vs
+			    		});
+			    	}
+				});
+			});
 		}
 	);
 }
@@ -101,6 +113,7 @@ function getIndex(teamName){
 }
 
 server.listen(3000, function() {
+	// TODO: This needs to be DRYed up
     request({ 
 		method: 'get',
 		uri:'http://www.nfl.com/liveupdate/scorestrip/ss.json'
@@ -111,7 +124,7 @@ server.listen(3000, function() {
 		console.log("Scores Set");
 		setInterval(function(){
 			updateScore();	
-		},30000);
+		},15000);
 	});
 	console.log('listening on *:3000');
 });
