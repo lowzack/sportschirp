@@ -54,20 +54,18 @@
     <script src="/dist/js/bootstrap.min.js"></script>
     <script src="/dist/js/parallax.min.js"></script>
     <script type="text/javascript">
-      var socket = io();
+      var socket = io.connect();
       socket.on('homeScore', function(msg) {
-		//var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=homeSound%>');
         audio.play();
-        $('#homeScore').html(msg.home);
-        $('#awayScore').html(msg.away);
+	$('#homeScore').html(msg.home);
+	$('#awayScore').html(msg.away);
       });
       socket.on('awayScore', function(msg) {
-		//var data = JSON.parse(msg);
       	var audio = new Audio('media/<%=awaySound%>');
         audio.play();
-        $('#homeScore').html(msg.home);
-        $('#awayScore').html(msg.away);
+	$('#homeScore').html(msg.home);
+	$('#awayScore').html(msg.away);
       });
     </script>
   </body>
