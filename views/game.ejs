@@ -1,0 +1,72 @@
+<html>
+  <head>
+    <title>Sports Chirp!</title>
+    <style>
+    	body{
+    		padding: 0;
+    		margin:0;
+    	}
+		.section-header {
+			padding-top:5vh;
+			min-height: 30vh;
+			text-align: center;
+		}
+		.teamView {
+			text-align: center;
+		}
+		.teamView img{
+			margin: 0 auto;
+			max-height: 200px;
+		}
+		#scoreArea {
+			background-color: rgba(255,255,255,.6);
+		}
+    </style>
+    <link href="/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  </head>
+  <body>
+	<div class="section-header" >
+		<div class="container">
+			<h1 class="page-title">Sports Chirp</h1>
+			<p>This site will produce sounds for each team whenever they score points!<br>
+			Stick around to hear the action!
+			</p>
+		</div>
+	</div>
+	<div data-parallax="scroll" data-image-src="media/images/fieldBackground.jpg">
+		<div class="container" id="scoreArea">
+			<div id="gameSection" class="row">
+				<div id="homeTeam" class="col-md-6 teamView">
+					<h2 id="homeName"><%=homeName%></h2>
+					<img src="/media/images/<%=homeLogo%>">
+					<h3 id="homeScore"><%=homeScore%></h3>
+				</div>
+				<div id="awayTeam" class="col-md-6 teamView">
+					<h2 id="awayName"><%=awayName%></h2>
+					<img src="/media/images/<%=awayLogo%>">
+					<h3 id="awayScore"><%=awayScore%></h3>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+    <script src="/dist/js/jquery-min.js"></script>
+    <script src="/dist/js/bootstrap.min.js"></script>
+    <script src="/dist/js/parallax.min.js"></script>
+    <script type="text/javascript">
+      var socket = io.connect();
+      socket.on('homeScore', function(msg) {
+      	var audio = new Audio('media/<%=homeSound%>');
+        audio.play();
+	$('#homeScore').html(msg.home);
+	$('#awayScore').html(msg.away);
+      });
+      socket.on('awayScore', function(msg) {
+      	var audio = new Audio('media/<%=awaySound%>');
+        audio.play();
+	$('#homeScore').html(msg.home);
+	$('#awayScore').html(msg.away);
+      });
+    </script>
+  </body>
+</html>

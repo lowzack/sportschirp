@@ -24,6 +24,10 @@ app.use("/dist/fonts", express.static(__dirname + '/dist/fonts'));
 
 app.set('view engine', 'ejs')
 
+app.get('/', function(req, res) {
+	res.send("Main route")
+}); 
+
 app.get('/:team', function(req, res) {
 
 	var gameIndex = getIndex(req.params.team);
@@ -35,7 +39,7 @@ app.get('/:team', function(req, res) {
 		var game = currentScores[gameIndex];
 		//res.send(game.h + ": " + game.hs + " - " + game.v + ": "+game.vs);
 		//res.sendFile(__dirname + "/index.html");
-		res.render('index', {
+		res.render('game', {
 			'homeName':game.hnn,
 			'homeScore':game.hs,
 			'homeSound':config[game.h.toLowerCase()].sound,
